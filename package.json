@@ -4,8 +4,9 @@
   "description": "for lazyjobseeker",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "start": "node index.js",
+  "install-playwright": "npx playwright install"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Raviteja-me/playwright-scrapping.git"
