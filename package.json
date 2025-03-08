@@ -1,0 +1,25 @@
+{
+  "name": "playwright-scrapping",
+  "version": "1.0.0",
+  "description": "for lazyjobseeker",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Raviteja-me/playwright-scrapping.git"
+  },
+  "author": "RavitejaBeere@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Raviteja-me/playwright-scrapping/issues"
+  },
+  "homepage": "https://github.com/Raviteja-me/playwright-scrapping#readme",
+  "dependencies": {
+    "express": "^4.21.2",
+    "playwright": "^1.51.0",
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  }
+}
