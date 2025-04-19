@@ -1,5 +1,5 @@
-# Use Node.js as base image
-FROM node:20
+# Use Playwright's official image with browsers pre-installed
+FROM mcr.microsoft.com/playwright:v1.51.0
 
 # Set working directory
 WORKDIR /app
@@ -13,7 +13,7 @@ RUN npm install
 # Copy the entire project
 COPY . .
 
-# Expose the port Playwright will use
+# Expose port for Cloud Run
 EXPOSE 8080
 
 # Start the API
