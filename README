@@ -1,4 +1,43 @@
-IT  WORKS ON GET REQUESR
-URL/SCRAPE?URL=LAZYJOBSEEKER.COM
+# Ultimate Web Scraper
 
-it is advanced then the webscraper-api in my repositories
+A powerful web scraping tool built with Playwright and Express that provides multiple scraping capabilities:
+
+## Features
+
+1. **Single URL Scraping** (`/scrape`)
+   - Scrape content from a single URL
+   - Get full HTML or readable content extraction
+   - Support for waiting for specific selectors
+
+2. **Multi-page Crawling** (`/crawl`)
+   - Crawl multiple pages starting from a URL
+   - Control depth and number of pages
+   - Domain filtering and pattern matching
+
+3. **Site Mapping** (`/map`)
+   - Create a complete site map
+   - Discover site structure
+   - Control depth and URL patterns
+
+4. **Content Search** (`/search`)
+   - Search for specific content across a website
+   - Get context around matches
+   - Control search depth and patterns
+
+5. **LinkedIn URL Processing** (`/get-linkedin-url`)
+   - Legacy endpoint for LinkedIn URL processing
+
+## API Documentation
+
+### 1. Single URL Scraping
+
+**Endpoint:** `GET /scrape`
+
+**Parameters:**
+- `url` (required): The URL to scrape
+- `selector` (optional): CSS selector to wait for
+- `wait_for` (optional): Wait until event (domcontentloaded, load, networkidle)
+- `timeout` (optional): Timeout in milliseconds
+- `format` (optional): Response format (html or readable)
+
+**Example:**

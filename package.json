@@ -4,9 +4,9 @@
   "description": "for lazyjobseeker",
   "main": "index.js",
   "scripts": {
-  "start": "node index.js",
-  "install-playwright": "npx playwright install"
-},
+    "start": "node index.js",
+    "install-playwright": "npx playwright install"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Raviteja-me/playwright-scrapping.git"
@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Raviteja-me/playwright-scrapping#readme",
   "dependencies": {
+    "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "playwright": "^1.51.0",
     "playwright-extra": "^4.3.6",
