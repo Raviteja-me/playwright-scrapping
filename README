@@ -42,6 +42,16 @@ A powerful web scraping tool built with Playwright and Express that provides mul
 
 **Example:**
 
+pushing:
+
+
+docker build --platform=linux/amd64 -t gcr.io/PROJECTID/playwright-scrapping .
+docker push gcr.io/PROJECTID/playwright-scrapping
+gcloud run deploy playwright-scrapping \
+  --image gcr.io/PROJECTID/playwright-scrapping \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated
 
 
 
