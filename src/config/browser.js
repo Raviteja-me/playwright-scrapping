@@ -31,9 +31,9 @@ async function getBrowserContext() {
   console.log("Initializing browser context...");
 
   try {
-    const browser = await chromium.launch({ 
-      headless: true, 
-      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+    // Configure browser launch options based on environment
+    const launchOptions = { 
+      headless: true,
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
@@ -46,7 +46,44 @@ async function getBrowserContext() {
         "--js-flags=--max-old-space-size=500", // Limit memory usage
         "--window-size=1920,1080"
       ]
-    });
+    };
+    
+    // If running in Cloud Run, use the environment variable for executable path
+    if (process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH) {
+      console.log(`Using Chromium at: ${process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH}`);
+      launchOptions.executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
+    } else {
+      // Try to find the Chromium executable path dynamically
+      try {
+        const fs = require('fs');
+        const path = require('path');
+        const playwrightPath = path.join(__dirname, '../../node_modules/playwright/.cache/playwright');
+        
+        if (fs.existsSync(playwrightPath)) {
+          const chromiumDirs = fs.readdirSync(playwrightPath)
+            .filter(dir => dir.startsWith('chromium-'))
+            .map(dir => path.join(playwrightPath, dir, 'chrome-linux', 'chrome'))
+            .filter(file => fs.existsSync(file));
+          
+          if (chromiumDirs.length > 0) {
+            launchOptions.executablePath = chromiumDirs[0];
+            console.log(`Found Chromium at: ${launchOptions.executablePath}`);
+          }
+        }
+      } catch (error) {
+        console.log(`Error finding Chromium executable: ${error.message}`);
+      }
+    }
+    
+    // Add additional args from environment if available
+    if (process.env.PLAYWRIGHT_CHROMIUM_ARGS) {
+      const additionalArgs = process.env.PLAYWRIGHT_CHROMIUM_ARGS.split(' ');
+      console.log(`Adding additional args: ${additionalArgs.join(', ')}`);
+      launchOptions.args = [...launchOptions.args, ...additionalArgs];
+    }
+    
+    console.log("Launching browser with options:", JSON.stringify(launchOptions, null, 2));
+    const browser = await chromium.launch(launchOptions);
 
     const context = await browser.newContext({
       userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
