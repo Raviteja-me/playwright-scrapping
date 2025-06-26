@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { getBrowserContext, saveCookies } = require('../config/browser');
 const { extractReadableContent } = require('../utils/content-extractor');
+const TurndownService = require('turndown');
+const turndownService = new TurndownService();
 
 // SINGLE URL SCRAPING ENDPOINT
 router.get("/scrape", async (req, res) => {
@@ -56,6 +58,32 @@ router.get("/scrape", async (req, res) => {
       if (format === 'readable') {
         // Extract readable content
         result = await extractReadableContent(page);
+      } else if (format === 'markdown') {
+        // Extract main content as HTML
+        const html = await page.evaluate(() => {
+          // Remove unwanted elements
+          const elementsToRemove = [
+            'script', 'style', 'noscript', 'iframe', 'svg', 'path', 'footer',
+            'nav', 'header', '[role="banner"]', '[role="navigation"]', '[role="complementary"]'
+          ];
+          elementsToRemove.forEach(selector => {
+            document.querySelectorAll(selector).forEach(el => el.remove());
+          });
+          // Extract main content
+          const mainContent = document.querySelector('main') || 
+                              document.querySelector('article') || 
+                              document.querySelector('#content') || 
+                              document.querySelector('.content') || 
+                              document.body;
+          return mainContent ? mainContent.innerHTML : document.body.innerHTML;
+        });
+        // Convert HTML to Markdown
+        const markdown = turndownService.turndown(html);
+        result = {
+          url: finalUrl,
+          title,
+          markdown
+        };
       } else {
         // Default: return full HTML
         const html = await page.content();

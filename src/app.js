@@ -2,10 +2,21 @@ require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
+const cors = require("cors");
 
 // Create Express app
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+// Enable CORS for allowed origins
+app.use(cors({
+  origin: [
+    'https://lazyjobseeker.com',
+    'http://localhost:3000',
+    'http://localhost:8080',
+    'http://localhost:8081'
+  ]
+}));
 
 // Enable JSON body parsing
 app.use(bodyParser.json());

@@ -1,13 +1,15 @@
 # Ultimate Web Scraper
 
-A powerful web scraping tool built with Playwright and Express that provides multiple scraping capabilities:
+A powerful web scraping tool built with Playwright and Express that provides multiple scraping capabilities, now with improved job content extraction and CORS support for frontend integration.
 
 ## Features
 
 1. **Single URL Scraping** (`/scrape`)
    - Scrape content from a single URL
-   - Get full HTML or readable content extraction
+   - Get full HTML, Markdown, or readable content extraction
    - Support for waiting for specific selectors
+   - Cleans job listings from sites like LinkedIn, Naukri, Glassdoor, etc.
+   - Removes headers, footers, ads, and other clutter
 
 2. **Multi-page Crawling** (`/crawl`)
    - Crawl multiple pages starting from a URL
@@ -25,33 +27,78 @@ A powerful web scraping tool built with Playwright and Express that provides mul
    - Control search depth and patterns
 
 5. **LinkedIn URL Processing** (`/get-linkedin-url`)
-   - Legacy endpoint for LinkedIn URL processing
+   - Legacy endpoint for LinkedIn job details
 
-## API Documentation
+## CORS Support
 
-### 1. Single URL Scraping
+CORS is enabled for the following origins:
+- https://lazyjobseeker.com
+- http://localhost:3000
+- http://localhost:8080
+- http://localhost:8081
 
-**Endpoint:** `GET /scrape`
+This allows seamless integration with your frontend, both in production and local development.
 
-**Parameters:**
-- `url` (required): The URL to scrape
-- `selector` (optional): CSS selector to wait for
-- `wait_for` (optional): Wait until event (domcontentloaded, load, networkidle)
-- `timeout` (optional): Timeout in milliseconds
-- `format` (optional): Response format (html or readable)
+## Improved Job Content Extraction
 
-**Example:**
+- Uses advanced selectors and post-processing to remove unwanted blocks (e.g., "Sign in", "Similar jobs", "People also viewed").
+- Returns clean Markdown or plain text for job listings.
+- Site-specific rules for LinkedIn and other job boards.
 
-pushing:
+## Example Usage
 
+### Scrape a Job Page (Markdown)
 
-docker build --platform=linux/amd64 -t gcr.io/PROJECTID/playwright-scrapping .
-docker push gcr.io/PROJECTID/playwright-scrapping
+```sh
+curl "http://localhost:8081/scrape?url=https://www.linkedin.com/jobs/view/4254832243/&format=markdown"
+```
+
+### Scrape a Job Page (Full HTML)
+
+```sh
+curl "http://localhost:8081/scrape?url=https://www.linkedin.com/jobs/view/4254832243/"
+```
+
+### Scrape with Selector Wait
+
+```sh
+curl "http://localhost:8081/scrape?url=https://www.linkedin.com/jobs/view/4254832243/&selector=.job-description&format=markdown"
+```
+
+## Deploying to Google Cloud Run
+
+1. **Build and Push Docker Image:**
+
+```sh
+docker build --platform=linux/amd64 -t gcr.io/lazy-job-seeker-4b29b/playwright-scrapping .
+docker push gcr.io/lazy-job-seeker-4b29b/playwright-scrapping
+```
+
+2. **Deploy to Cloud Run:**
+
+```sh
 gcloud run deploy playwright-scrapping \
-  --image gcr.io/PROJECTID/playwright-scrapping \
+  --image gcr.io/lazy-job-seeker-4b29b/playwright-scrapping \
   --platform managed \
   --region us-central1 \
   --allow-unauthenticated
+```
+
+3. **Test the Cloud Run Endpoint:**
+
+```sh
+curl "https://YOUR_CLOUD_RUN_URL/scrape?url=https://www.linkedin.com/jobs/view/4254832243/&format=markdown"
+```
+
+## Best Practices
+
+- For LinkedIn and other protected sites, ensure Playwright is authenticated if you need private data.
+- Use the Markdown format for the cleanest output.
+- Update selectors in `src/utils/job-content-extractor.js` for new job boards as needed.
+
+---
+
+For any issues or contributions, please open an issue or pull request on GitHub.
 
 
 
